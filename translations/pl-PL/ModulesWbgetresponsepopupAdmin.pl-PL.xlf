@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesWbgetresponsepopupAdmin.xlf" source-language="en-US" target-language="pl-PL" datatype="plaintext">
+    <body>
+      <trans-unit id="1">
+        <source>(WB) GetResponse Newsletter Popup</source>
+        <target>(WB) GetResponse Popup Newslettera</target>
+      </trans-unit>
+      <trans-unit id="2">
+        <source>Displays a newsletter subscription popup with GetResponse integration and optional discount code generation.</source>
+        <target>Wyswietla popup zapisu do newslettera z integracją GetResponse i opcjonalnym generowaniem kodow rabatowych.</target>
+      </trans-unit>
+      <trans-unit id="3">
+        <source>Settings saved successfully.</source>
+        <target>Ustawienia zostaly zapisane.</target>
+      </trans-unit>
+      <trans-unit id="4">
+        <source>Date "from" must be earlier than date "to".</source>
+        <target>Data "od" musi byc wczesniejsza niz data "do".</target>
+      </trans-unit>
+      <trans-unit id="5">
+        <source>Trigger value must be a positive number.</source>
+        <target>Wartosc wyzwalacza musi byc liczba dodatnia.</target>
+      </trans-unit>
+      <trans-unit id="6">
+        <source>Discount value must be greater than 0 when discounts are enabled.</source>
+        <target>Wartosc rabatu musi byc wieksza niz 0, gdy rabaty sa wlaczone.</target>
+      </trans-unit>
+      <trans-unit id="7">
+        <source>Discount validity must be at least 1 day.</source>
+        <target>Waznosc rabatu musi wynosic co najmniej 1 dzien.</target>
+      </trans-unit>
+      <trans-unit id="8">
+        <source>Cookie duration for closed popup must be at least 1 minute.</source>
+        <target>Czas trwania cookie zamknietego popupu musi wynosic co najmniej 1 minute.</target>
+      </trans-unit>
+      <trans-unit id="9">
+        <source>Cookie duration for subscribed users must be at least 1 minute.</source>
+        <target>Czas trwania cookie zapisanego uzytkownika musi wynosic co najmniej 1 minute.</target>
+      </trans-unit>
+      <trans-unit id="10">
+        <source>GetResponse Connection</source>
+        <target>Polaczenie GetResponse</target>
+      </trans-unit>
+      <trans-unit id="11">
+        <source>API Key</source>
+        <target>Klucz API</target>
+      </trans-unit>
+      <trans-unit id="12">
+        <source>Your GetResponse API key. Find it in GetResponse > Menu > Integrations &amp; API > API.</source>
+        <target>Twoj klucz API GetResponse. Znajdziesz go w GetResponse > Menu > Integracje i API > API.</target>
+      </trans-unit>
+      <trans-unit id="13">
+        <source>Test API Connection</source>
+        <target>Testuj polaczenie API</target>
+      </trans-unit>
+      <trans-unit id="14">
+        <source>Campaign Token</source>
+        <target>Token kampanii</target>
+      </trans-unit>
+      <trans-unit id="15">
+        <source>The campaign list token (e.g., "PsgxP"), NOT the numeric ID. Find it in GetResponse > Lists > your list > Settings > Token.</source>
+        <target>Token listy kampanii (np. "PsgxP"), NIE numeryczne ID. Znajdziesz go w GetResponse > Listy > Twoja lista > Ustawienia > Token.</target>
+      </trans-unit>
+      <trans-unit id="16">
+        <source>Discount Code Custom Field Name</source>
+        <target>Nazwa pola dodatkowego kodu rabatowego</target>
+      </trans-unit>
+      <trans-unit id="17">
+        <source>GetResponse custom field name for the discount code (e.g., "discount_code"). Must match the exact field name in GetResponse > Contacts > Custom fields. Leave empty to skip sending discount code to GetResponse.</source>
+        <target>Nazwa pola dodatkowego GetResponse dla kodu rabatowego (np. "discount_code"). Musi dokladnie odpowiadac nazwie pola w GetResponse > Kontakty > Pola dodatkowe. Pozostaw puste, aby nie wysylac kodu rabatowego do GetResponse.</target>
+      </trans-unit>
+      <trans-unit id="18">
+        <source>Form Fields</source>
+        <target>Pola formularza</target>
+      </trans-unit>
+      <trans-unit id="19">
+        <source>Email is always displayed. Select additional fields to show in the popup form.</source>
+        <target>Email jest zawsze wyswietlany. Wybierz dodatkowe pola do wyswietlenia w formularzu popupu.</target>
+      </trans-unit>
+      <trans-unit id="20">
+        <source>First Name</source>
+        <target>Imie</target>
+      </trans-unit>
+      <trans-unit id="21">
+        <source>Last Name</source>
+        <target>Nazwisko</target>
+      </trans-unit>
+      <trans-unit id="22">
+        <source>Date of Birth</source>
+        <target>Data urodzenia</target>
+      </trans-unit>
+      <trans-unit id="23">
+        <source>Display Schedule</source>
+        <target>Harmonogram wyswietlania</target>
+      </trans-unit>
+      <trans-unit id="24">
+        <source>Leave empty to display the popup at all times. If set, the popup will only appear within the specified date range.</source>
+        <target>Pozostaw puste, aby wyswietlac popup caly czas. Po ustawieniu popup bedzie widoczny tylko w podanym zakresie dat.</target>
+      </trans-unit>
+      <trans-unit id="25">
+        <source>Date From</source>
+        <target>Data od</target>
+      </trans-unit>
+      <trans-unit id="26">
+        <source>Date To</source>
+        <target>Data do</target>
+      </trans-unit>
+      <trans-unit id="27">
+        <source>Popup Trigger</source>
+        <target>Wyzwalacz popupu</target>
+      </trans-unit>
+      <trans-unit id="28">
+        <source>Trigger Type</source>
+        <target>Typ wyzwalacza</target>
+      </trans-unit>
+      <trans-unit id="29">
+        <source>After time delay (seconds)</source>
+        <target>Po opoznieniu czasowym (sekundy)</target>
+      </trans-unit>
+      <trans-unit id="30">
+        <source>Exit intent (cursor leaves viewport)</source>
+        <target>Zamiar wyjscia (kursor opuszcza okno)</target>
+      </trans-unit>
+      <trans-unit id="31">
+        <source>User inactivity (seconds)</source>
+        <target>Brak aktywnosci uzytkownika (sekundy)</target>
+      </trans-unit>
+      <trans-unit id="32">
+        <source>Scroll percentage (%)</source>
+        <target>Procent przewiniecia (%)</target>
+      </trans-unit>
+      <trans-unit id="33">
+        <source>Trigger Value</source>
+        <target>Wartosc wyzwalacza</target>
+      </trans-unit>
+      <trans-unit id="34">
+        <source>Seconds for time/inactivity triggers, percentage (0-100) for scroll trigger. Not used for exit intent.</source>
+        <target>Sekundy dla wyzwalaczy czasu/braku aktywnosci, procent (0-100) dla wyzwalacza przewijania. Nie uzywane dla zamiaru wyjscia.</target>
+      </trans-unit>
+      <trans-unit id="35">
+        <source>Discount Code</source>
+        <target>Kod rabatowy</target>
+      </trans-unit>
+      <trans-unit id="36">
+        <source>Enable Discount Code Generation</source>
+        <target>Wlacz generowanie kodow rabatowych</target>
+      </trans-unit>
+      <trans-unit id="37">
+        <source>Discount Type</source>
+        <target>Rodzaj rabatu</target>
+      </trans-unit>
+      <trans-unit id="38">
+        <source>Percentage (%)</source>
+        <target>Procentowy (%)</target>
+      </trans-unit>
+      <trans-unit id="39">
+        <source>Fixed amount</source>
+        <target>Kwota stala</target>
+      </trans-unit>
+      <trans-unit id="40">
+        <source>Free shipping</source>
+        <target>Darmowa wysylka</target>
+      </trans-unit>
+      <trans-unit id="41">
+        <source>Discount Value</source>
+        <target>Wartosc rabatu</target>
+      </trans-unit>
+      <trans-unit id="42">
+        <source>Percentage or fixed amount value. Not used for free shipping.</source>
+        <target>Wartosc procentowa lub kwotowa. Nie uzywane dla darmowej wysylki.</target>
+      </trans-unit>
+      <trans-unit id="43">
+        <source>Validity (days)</source>
+        <target>Waznosc (dni)</target>
+      </trans-unit>
+      <trans-unit id="44">
+        <source>Minimum Cart Value</source>
+        <target>Minimalna wartosc koszyka</target>
+      </trans-unit>
+      <trans-unit id="45">
+        <source>Set to 0 for no minimum.</source>
+        <target>Ustaw 0, aby nie bylo minimum.</target>
+      </trans-unit>
+      <trans-unit id="46">
+        <source>Limit to Categories</source>
+        <target>Ogranicz do kategorii</target>
+      </trans-unit>
+      <trans-unit id="47">
+        <source>Leave unselected for no category restriction.</source>
+        <target>Pozostaw niezaznaczone, aby nie ograniczac do kategorii.</target>
+      </trans-unit>
+      <trans-unit id="48">
+        <source>Limit to Products</source>
+        <target>Ogranicz do produktow</target>
+      </trans-unit>
+      <trans-unit id="49">
+        <source>Search and select products. Leave empty for no restriction.</source>
+        <target>Wyszukaj i wybierz produkty. Pozostaw puste, aby nie ograniczac.</target>
+      </trans-unit>
+      <trans-unit id="50">
+        <source>Search by name, reference or EAN...</source>
+        <target>Szukaj po nazwie, referencji lub EAN...</target>
+      </trans-unit>
+      <trans-unit id="51">
+        <source>Limit to Carriers</source>
+        <target>Ogranicz do przewoznikow</target>
+      </trans-unit>
+      <trans-unit id="52">
+        <source>Leave empty for no carrier restriction. Hold Ctrl/Cmd to select multiple.</source>
+        <target>Pozostaw puste, aby nie ograniczac do przewoznikow. Przytrzymaj Ctrl/Cmd, aby wybrac wiele.</target>
+      </trans-unit>
+      <trans-unit id="53">
+        <source>Exclusive (no combination with other discounts)</source>
+        <target>Wylacznosc (nie laczy sie z innymi rabatami)</target>
+      </trans-unit>
+      <trans-unit id="54">
+        <source>Cookie Settings</source>
+        <target>Ustawienia cookie</target>
+      </trans-unit>
+      <trans-unit id="55">
+        <source>Popup Closed Cookie Duration (minutes)</source>
+        <target>Czas trwania cookie zamknietego popupu (minuty)</target>
+      </trans-unit>
+      <trans-unit id="56">
+        <source>How many minutes to hide the popup after the user closes it. E.g., 10080 = 7 days, 1440 = 1 day, 60 = 1 hour.</source>
+        <target>Ile minut ukrywac popup po zamknieciu przez uzytkownika. Np. 10080 = 7 dni, 1440 = 1 dzien, 60 = 1 godzina.</target>
+      </trans-unit>
+      <trans-unit id="57">
+        <source>Subscribed Cookie Duration (minutes)</source>
+        <target>Czas trwania cookie zapisanego uzytkownika (minuty)</target>
+      </trans-unit>
+      <trans-unit id="58">
+        <source>How many minutes to hide the popup after a successful subscription. E.g., 43200 = 30 days, 20160 = 14 days.</source>
+        <target>Ile minut ukrywac popup po udanym zapisie. Np. 43200 = 30 dni, 20160 = 14 dni.</target>
+      </trans-unit>
+      <trans-unit id="59">
+        <source>Popup Appearance</source>
+        <target>Wyglad popupu</target>
+      </trans-unit>
+      <trans-unit id="60">
+        <source>Popup Image URL</source>
+        <target>URL obrazka popupu</target>
+      </trans-unit>
+      <trans-unit id="61">
+        <source>Full URL to the image displayed on the left side of the popup. Recommended size: 344x573px. Leave empty to show a form-only popup.</source>
+        <target>Pelny URL do obrazka wyswietlanego po lewej stronie popupu. Zalecany rozmiar: 344x573px. Pozostaw puste, aby wyswietlic popup tylko z formularzem.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,21 @@
+# Composer
+/vendor/
+
+# Uploads (user-uploaded images at runtime)
+/uploads/*
+!/uploads/index.php
+!/uploads/.htaccess
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Claude Code
+.claude/
+CLAUDE.md

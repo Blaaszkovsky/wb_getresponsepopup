@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file original="ModulesWbgetresponsepopupShop.xlf" source-language="en-US" target-language="pl-PL" datatype="plaintext">
+    <body>
+      <trans-unit id="1">
+        <source>Close</source>
+        <target>Zamknij</target>
+      </trans-unit>
+      <trans-unit id="2">
+        <source>Subscribe to our newsletter</source>
+        <target>Zapisz sie do naszego newslettera</target>
+      </trans-unit>
+      <trans-unit id="3">
+        <source>Stay up to date with the latest news, special offers and exclusive deals.</source>
+        <target>Badz na biezaco z najnowszymi wiadomosciami, ofertami specjalnymi i ekskluzywnymi promocjami.</target>
+      </trans-unit>
+      <trans-unit id="4">
+        <source>First name</source>
+        <target>Imie</target>
+      </trans-unit>
+      <trans-unit id="5">
+        <source>Last name</source>
+        <target>Nazwisko</target>
+      </trans-unit>
+      <trans-unit id="6">
+        <source>Date of birth</source>
+        <target>Data urodzenia</target>
+      </trans-unit>
+      <trans-unit id="7">
+        <source>Email address</source>
+        <target>Adres e-mail</target>
+      </trans-unit>
+      <trans-unit id="8">
+        <source>I agree to receive marketing communications and accept the privacy policy.</source>
+        <target>Wyrazam zgode na otrzymywanie informacji handlowych i akceptuje polityke prywatnosci.</target>
+      </trans-unit>
+      <trans-unit id="9">
+        <source>Subscribe</source>
+        <target>Zapisz sie</target>
+      </trans-unit>
+      <trans-unit id="10">
+        <source>Subscribing...</source>
+        <target>Zapisywanie...</target>
+      </trans-unit>
+      <trans-unit id="11">
+        <source>Thank you!</source>
+        <target>Dziekujemy!</target>
+      </trans-unit>
+      <trans-unit id="12">
+        <source>You have been successfully subscribed to our newsletter.</source>
+        <target>Zostales pomyslnie zapisany do naszego newslettera.</target>
+      </trans-unit>
+      <trans-unit id="13">
+        <source>Here is your exclusive discount code:</source>
+        <target>Oto Twoj ekskluzywny kod rabatowy:</target>
+      </trans-unit>
+      <trans-unit id="14">
+        <source>Use it at checkout to claim your discount!</source>
+        <target>Uzyj go przy skladaniu zamowienia, aby skorzystac z rabatu!</target>
+      </trans-unit>
+      <trans-unit id="15">
+        <source>Join us and get</source>
+        <target>Dolacz do nas i zgarnij</target>
+      </trans-unit>
+      <trans-unit id="16">
+        <source>%value%% discount on the entire cart!</source>
+        <target>%value%% znizki na caly koszyk!</target>
+      </trans-unit>
+      <trans-unit id="17">
+        <source>%value% discount on the entire cart!</source>
+        <target>%value% znizki na caly koszyk!</target>
+      </trans-unit>
+      <trans-unit id="18">
+        <source>Free shipping on the entire cart!</source>
+        <target>Darmowa dostawa na caly koszyk!</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

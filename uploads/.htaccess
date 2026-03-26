@@ -1,0 +1,25 @@
+# Prevent directory listing
+Options -Indexes
+
+# Disable PHP execution
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+
+# Deny access to all files except images
+<IfModule mod_authz_core.c>
+    Require all denied
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
+        Require all granted
+    </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+    <FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
+        Allow from all
+    </FilesMatch>
+</IfModule>

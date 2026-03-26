@@ -1,0 +1,14 @@
+{
+    "name": "wbshop/wb_getresponsepopup",
+    "description": "GetResponse newsletter popup with discount code generation",
+    "type": "prestashop-module",
+    "license": "AFL-3.0",
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "PrestaShop\\Module\\WbGetresponsePopup\\": "src/"
+        }
+    }
+}

@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: composer:v2
+
+      - name: Install Composer dependencies (no dev)
+        run: composer install --no-dev --optimize-autoloader --no-interaction
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build PrestaShop module ZIP
+        run: |
+          MODULE_NAME="wb_getresponsepopup"
+          RELEASE_DIR="${GITHUB_WORKSPACE}/release"
+          TARGET_DIR="${RELEASE_DIR}/${MODULE_NAME}"
+
+          mkdir -p "${TARGET_DIR}"
+
+          # Copy all module files preserving structure
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.gitignore' \
+            --exclude='.claude' \
+            --exclude='CLAUDE.md' \
+            --exclude='uploads/*.jpg' \
+            --exclude='uploads/*.jpeg' \
+            --exclude='uploads/*.png' \
+            --exclude='uploads/*.gif' \
+            --exclude='uploads/*.webp' \
+            ./ "${TARGET_DIR}/"
+
+          # Ensure uploads directory exists with security files only
+          mkdir -p "${TARGET_DIR}/uploads"
+
+          # Create the ZIP from the release directory so the root folder is wb_getresponsepopup/
+          cd "${RELEASE_DIR}"
+          zip -r "${GITHUB_WORKSPACE}/${MODULE_NAME}-${{ steps.version.outputs.VERSION }}.zip" "${MODULE_NAME}/"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "v${{ steps.version.outputs.VERSION }}"
+          generate_release_notes: true
+          files: wb_getresponsepopup-${{ steps.version.outputs.VERSION }}.zip
