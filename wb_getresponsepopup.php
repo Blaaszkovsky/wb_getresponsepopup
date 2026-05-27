@@ -40,6 +40,8 @@ class Wb_getresponsepopup extends Module
         'WB_GETRESPONSEPOPUP_COOKIE_SUBSCRIBED_MIN',
         'WB_GETRESPONSEPOPUP_POPUP_IMAGE_DESKTOP',
         'WB_GETRESPONSEPOPUP_POPUP_IMAGE_MOBILE',
+        'WB_GETRESPONSEPOPUP_EXCLUDED_CONTROLLERS',
+        'WB_GETRESPONSEPOPUP_EXCLUDED_CMS_PAGES',
         'WB_GETRESPONSEPOPUP_TEXT_TITLE',
         'WB_GETRESPONSEPOPUP_TEXT_SUBTITLE',
         'WB_GETRESPONSEPOPUP_TEXT_SUBMIT',
@@ -82,6 +84,31 @@ class Wb_getresponsepopup extends Module
     ];
 
     private const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
+
+    private const EXCLUDABLE_CONTROLLERS = [
+        'index' => 'Home page',
+        'category' => 'Category listing',
+        'product' => 'Product page',
+        'manufacturer' => 'Brand / Manufacturer',
+        'supplier' => 'Supplier',
+        'best-sales' => 'Best sales',
+        'new-products' => 'New products',
+        'prices-drop' => 'Prices drop',
+        'search' => 'Search results',
+        'sitemap' => 'Sitemap',
+        'stores' => 'Stores',
+        'contact' => 'Contact',
+        'authentication' => 'Login / Registration',
+        'my-account' => 'My account',
+        'identity' => 'Customer identity',
+        'addresses' => 'Customer addresses',
+        'history' => 'Order history',
+        'cart' => 'Cart',
+        'order' => 'Checkout',
+        'order-confirmation' => 'Order confirmation',
+        'pagenotfound' => '404 page not found',
+        'module' => 'Module-rendered pages',
+    ];
 
     public function __construct()
     {
@@ -166,6 +193,8 @@ class Wb_getresponsepopup extends Module
             'WB_GETRESPONSEPOPUP_COOKIE_SUBSCRIBED_MIN' => '43200',
             'WB_GETRESPONSEPOPUP_POPUP_IMAGE_DESKTOP' => '',
             'WB_GETRESPONSEPOPUP_POPUP_IMAGE_MOBILE' => '',
+            'WB_GETRESPONSEPOPUP_EXCLUDED_CONTROLLERS' => '[]',
+            'WB_GETRESPONSEPOPUP_EXCLUDED_CMS_PAGES' => '[]',
         ];
 
         foreach ($defaults as $key => $value) {
@@ -416,6 +445,23 @@ class Wb_getresponsepopup extends Module
         $categories = Tools::getValue('categoryBox');
         $products = (string) Tools::getValue('WB_GETRESPONSEPOPUP_DISCOUNT_PRODUCTS');
         $carriers = Tools::getValue('WB_GETRESPONSEPOPUP_DISCOUNT_CARRIERS');
+        $excludedControllers = Tools::getValue('WB_GETRESPONSEPOPUP_EXCLUDED_CONTROLLERS');
+        $excludedCmsPages = Tools::getValue('WB_GETRESPONSEPOPUP_EXCLUDED_CMS_PAGES');
+
+        $excludedControllersList = [];
+        if (is_array($excludedControllers)) {
+            foreach ($excludedControllers as $controllerName) {
+                $controllerName = (string) $controllerName;
+                if (isset(self::EXCLUDABLE_CONTROLLERS[$controllerName])) {
+                    $excludedControllersList[] = $controllerName;
+                }
+            }
+            $excludedControllersList = array_values(array_unique($excludedControllersList));
+        }
+
+        $excludedCmsList = is_array($excludedCmsPages)
+            ? array_values(array_unique(array_map('intval', $excludedCmsPages)))
+            : [];
 
         $productIds = [];
         if ($products !== '') {
@@ -443,6 +489,8 @@ class Wb_getresponsepopup extends Module
         Configuration::updateValue('WB_GETRESPONSEPOPUP_DISCOUNT_CATEGORIES', json_encode(is_array($categories) ? array_map('intval', $categories) : []));
         Configuration::updateValue('WB_GETRESPONSEPOPUP_DISCOUNT_PRODUCTS', json_encode($productIds));
         Configuration::updateValue('WB_GETRESPONSEPOPUP_DISCOUNT_CARRIERS', json_encode(is_array($carriers) ? array_map('intval', $carriers) : []));
+        Configuration::updateValue('WB_GETRESPONSEPOPUP_EXCLUDED_CONTROLLERS', json_encode($excludedControllersList));
+        Configuration::updateValue('WB_GETRESPONSEPOPUP_EXCLUDED_CMS_PAGES', json_encode($excludedCmsList));
         Configuration::updateValue('WB_GETRESPONSEPOPUP_DISCOUNT_EXCLUSIVE', (int) Tools::getValue('WB_GETRESPONSEPOPUP_DISCOUNT_EXCLUSIVE'));
         Configuration::updateValue('WB_GETRESPONSEPOPUP_DISCOUNT_SHOW_CODE', (int) Tools::getValue('WB_GETRESPONSEPOPUP_DISCOUNT_SHOW_CODE'));
         Configuration::updateValue('WB_GETRESPONSEPOPUP_COOKIE_CLOSED_MIN', $cookieClosed);
@@ -612,6 +660,10 @@ class Wb_getresponsepopup extends Module
             $value = Configuration::get($key);
             if ($key === 'WB_GETRESPONSEPOPUP_DISCOUNT_CARRIERS') {
                 $values[$key . '[]'] = json_decode((string) $value, true) ?: [];
+            } elseif ($key === 'WB_GETRESPONSEPOPUP_EXCLUDED_CONTROLLERS') {
+                $values[$key . '[]'] = json_decode((string) $value, true) ?: [];
+            } elseif ($key === 'WB_GETRESPONSEPOPUP_EXCLUDED_CMS_PAGES') {
+                $values[$key . '[]'] = json_decode((string) $value, true) ?: [];
             } elseif ($key === 'WB_GETRESPONSEPOPUP_DISCOUNT_PRODUCTS') {
                 $decoded = json_decode((string) $value, true) ?: [];
                 $values[$key] = implode(',', $decoded);
@@ -643,8 +695,76 @@ class Wb_getresponsepopup extends Module
             $this->getFormFieldsFieldset(),
             $this->getScheduleFieldset(),
             $this->getTriggerFieldset(),
+            $this->getPageExclusionFieldset(),
             $this->getDiscountFieldset(),
             $this->getCookieFieldset(),
+        ];
+    }
+
+    private function getPageExclusionFieldset(): array
+    {
+        $controllerOptions = [];
+        foreach (self::EXCLUDABLE_CONTROLLERS as $phpSelf => $label) {
+            $controllerOptions[] = [
+                'id' => $phpSelf,
+                'name' => $this->trans($label, [], 'Modules.Wbgetresponsepopup.Admin'),
+            ];
+        }
+
+        $idLang = (int) $this->context->language->id;
+        $idShop = (int) $this->context->shop->id;
+        $cmsOptions = [];
+        $cmsPages = CMS::listCms($idLang, $idShop);
+        if (is_array($cmsPages)) {
+            foreach ($cmsPages as $cms) {
+                $cmsOptions[] = [
+                    'id' => (int) $cms['id_cms'],
+                    'name' => $cms['meta_title'] !== '' ? $cms['meta_title'] : ('CMS #' . (int) $cms['id_cms']),
+                ];
+            }
+        }
+
+        return [
+            'form' => [
+                'legend' => [
+                    'title' => $this->trans('Page Exclusion', [], 'Modules.Wbgetresponsepopup.Admin'),
+                    'icon' => 'icon-ban',
+                ],
+                'description' => $this->trans(
+                    'Select pages where the popup should NOT be displayed. Leave both lists empty to allow the popup on every front-office page.',
+                    [],
+                    'Modules.Wbgetresponsepopup.Admin'
+                ),
+                'input' => [
+                    [
+                        'type' => 'select',
+                        'label' => $this->trans('Excluded controllers / pages', [], 'Modules.Wbgetresponsepopup.Admin'),
+                        'name' => 'WB_GETRESPONSEPOPUP_EXCLUDED_CONTROLLERS[]',
+                        'multiple' => true,
+                        'options' => [
+                            'query' => $controllerOptions,
+                            'id' => 'id',
+                            'name' => 'name',
+                        ],
+                        'desc' => $this->trans('Standard front-office controllers (cart, checkout, category, product, etc.). Hold Ctrl/Cmd to select multiple.', [], 'Modules.Wbgetresponsepopup.Admin'),
+                    ],
+                    [
+                        'type' => 'select',
+                        'label' => $this->trans('Excluded CMS pages', [], 'Modules.Wbgetresponsepopup.Admin'),
+                        'name' => 'WB_GETRESPONSEPOPUP_EXCLUDED_CMS_PAGES[]',
+                        'multiple' => true,
+                        'options' => [
+                            'query' => $cmsOptions,
+                            'id' => 'id',
+                            'name' => 'name',
+                        ],
+                        'desc' => $this->trans('CMS pages from Design > Pages where the popup must stay hidden. Hold Ctrl/Cmd to select multiple.', [], 'Modules.Wbgetresponsepopup.Admin'),
+                    ],
+                ],
+                'submit' => [
+                    'title' => $this->trans('Save', [], 'Admin.Actions'),
+                ],
+            ],
         ];
     }
 
@@ -1315,7 +1435,45 @@ class Wb_getresponsepopup extends Module
             }
         }
 
+        if ($this->isCurrentPageExcluded()) {
+            return false;
+        }
+
         return true;
+    }
+
+    private function isCurrentPageExcluded(): bool
+    {
+        $controller = $this->context->controller ?? null;
+        if ($controller === null) {
+            return false;
+        }
+
+        $phpSelf = isset($controller->php_self) ? (string) $controller->php_self : '';
+        if ($phpSelf === '') {
+            return false;
+        }
+
+        $excludedControllers = json_decode((string) Configuration::get('WB_GETRESPONSEPOPUP_EXCLUDED_CONTROLLERS'), true);
+        $excludedControllers = is_array($excludedControllers) ? $excludedControllers : [];
+        if (in_array($phpSelf, $excludedControllers, true)) {
+            return true;
+        }
+
+        if ($phpSelf === 'cms') {
+            $idCms = (int) Tools::getValue('id_cms');
+            if ($idCms <= 0) {
+                return false;
+            }
+
+            $excludedCms = json_decode((string) Configuration::get('WB_GETRESPONSEPOPUP_EXCLUDED_CMS_PAGES'), true);
+            $excludedCms = is_array($excludedCms) ? array_map('intval', $excludedCms) : [];
+            if (in_array($idCms, $excludedCms, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function buildDiscountBadge(): string

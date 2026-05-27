@@ -16,20 +16,89 @@
         discountEnabled: popup.getAttribute('data-discount-enabled') === '1'
     };
 
-    // Cookie helpers
-    function getCookie(name) {
+    // Dual persistence (cookie + localStorage) so the popup state survives
+    // intermediaries that may strip cookies (Cloudflare cache rules, "Bypass cache on cookie",
+    // privacy modes, etc.) and persists across page navigations on the same origin.
+    var isSecure = (window.location.protocol === 'https:');
+
+    function readCookie(name) {
         var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        return match ? match[2] : null;
+        return match ? decodeURIComponent(match[2]) : null;
     }
 
-    function setCookie(name, value, minutes) {
+    function writeCookie(name, value, minutes) {
+        var seconds = Math.max(60, Math.floor(minutes * 60));
         var date = new Date();
-        date.setTime(date.getTime() + minutes * 60 * 1000);
-        document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/;SameSite=Lax';
+        date.setTime(date.getTime() + seconds * 1000);
+        var parts = [
+            name + '=' + encodeURIComponent(value),
+            'expires=' + date.toUTCString(),
+            'max-age=' + seconds,
+            'path=/',
+            'SameSite=Lax'
+        ];
+        if (isSecure) {
+            parts.push('Secure');
+        }
+        document.cookie = parts.join('; ');
     }
 
-    // Don't show if cookies indicate closed or subscribed
-    if (getCookie('wb_gr_closed') || getCookie('wb_gr_subscribed')) {
+    function readStorage(name) {
+        try {
+            var raw = window.localStorage.getItem(name);
+            if (!raw) {
+                return null;
+            }
+            var entry = JSON.parse(raw);
+            if (!entry || typeof entry !== 'object') {
+                return null;
+            }
+            if (typeof entry.e === 'number' && entry.e < Date.now()) {
+                window.localStorage.removeItem(name);
+                return null;
+            }
+            return entry.v != null ? String(entry.v) : null;
+        } catch (err) {
+            return null;
+        }
+    }
+
+    function writeStorage(name, value, minutes) {
+        try {
+            window.localStorage.setItem(name, JSON.stringify({
+                v: value,
+                e: Date.now() + Math.max(60000, Math.floor(minutes * 60000))
+            }));
+        } catch (err) {
+            // localStorage unavailable (quota, Safari ITP, private mode) — cookie still carries the state.
+        }
+    }
+
+    function persistState(name, value, minutes) {
+        writeCookie(name, value, minutes);
+        writeStorage(name, value, minutes);
+    }
+
+    function hasState(name) {
+        return readCookie(name) !== null || readStorage(name) !== null;
+    }
+
+    // Reconcile: if either store has it, mirror to the other so it survives the next request.
+    function reconcile(name, minutes) {
+        var cookieValue = readCookie(name);
+        var storageValue = readStorage(name);
+        if (cookieValue !== null && storageValue === null) {
+            writeStorage(name, cookieValue, minutes);
+        } else if (storageValue !== null && cookieValue === null) {
+            writeCookie(name, storageValue, minutes);
+        }
+    }
+
+    reconcile('wb_gr_closed', config.cookieClosedMin);
+    reconcile('wb_gr_subscribed', config.cookieSubscribedMin);
+
+    // Don't show if either store indicates closed or subscribed
+    if (hasState('wb_gr_closed') || hasState('wb_gr_subscribed')) {
         return;
     }
 
@@ -54,7 +123,7 @@
     }
 
     function closePopup() {
-        setCookie('wb_gr_closed', '1', config.cookieClosedMin);
+        persistState('wb_gr_closed', '1', config.cookieClosedMin);
         hidePopup();
     }
 
@@ -173,7 +242,7 @@
         })
         .then(function (data) {
             if (data.success) {
-                setCookie('wb_gr_subscribed', '1', config.cookieSubscribedMin);
+                persistState('wb_gr_subscribed', '1', config.cookieSubscribedMin);
 
                 // Show success state
                 var formContent = popup.querySelector('.wb-gr-popup__content--form');
