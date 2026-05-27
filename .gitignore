@@ -1,5 +1,9 @@
 # Composer
 /vendor/
+composer.lock
+
+# PrestaShop auto-generated language config cache
+config_*.xml
 
 # Uploads (user-uploaded images at runtime)
 /uploads/*

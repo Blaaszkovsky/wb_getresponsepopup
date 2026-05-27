@@ -4,7 +4,7 @@
     "type": "prestashop-module",
     "license": "AFL-3.0",
     "require": {
-        "php": ">=8.1"
+        "php": ">=7.4"
     },
     "autoload": {
         "psr-4": {

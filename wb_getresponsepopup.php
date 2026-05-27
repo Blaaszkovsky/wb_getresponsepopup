@@ -522,7 +522,8 @@ class Wb_getresponsepopup extends Module
         return $safeName;
     }
 
-    private function reencodeImage(\GdImage $image, string $destPath, string $extension): bool
+    /** @param \GdImage|resource $image */
+    private function reencodeImage($image, string $destPath, string $extension): bool
     {
         switch ($extension) {
             case 'jpg':
