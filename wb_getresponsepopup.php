@@ -712,14 +712,17 @@ class Wb_getresponsepopup extends Module
         }
 
         $idLang = (int) $this->context->language->id;
-        $idShop = (int) $this->context->shop->id;
         $cmsOptions = [];
-        $cmsPages = CMS::listCms($idLang, $idShop);
+        // CMS::listCms($id_lang, $id_block, $active) — the 2nd argument is a CMS block id,
+        // NOT a shop id. PrestaShop scopes the result to the current shop internally via
+        // Context::getContext()->shop->id, so we only pass the language here.
+        $cmsPages = CMS::listCms($idLang);
         if (is_array($cmsPages)) {
             foreach ($cmsPages as $cms) {
+                $title = isset($cms['meta_title']) ? (string) $cms['meta_title'] : '';
                 $cmsOptions[] = [
                     'id' => (int) $cms['id_cms'],
-                    'name' => $cms['meta_title'] !== '' ? $cms['meta_title'] : ('CMS #' . (int) $cms['id_cms']),
+                    'name' => $title !== '' ? $title : ('CMS #' . (int) $cms['id_cms']),
                 ];
             }
         }

@@ -123,6 +123,12 @@
     }
 
     function closePopup() {
+        if (!shown) {
+            // The popup never actually became visible (e.g. the user navigated before the
+            // trigger fired, or this is a phantom event). Never persist "closed" in that case
+            // — that would block the popup on the next page without the user ever seeing it.
+            return;
+        }
         persistState('wb_gr_closed', '1', config.cookieClosedMin);
         hidePopup();
     }
