@@ -17,6 +17,8 @@ class Wb_getresponsepopup extends Module
         'WB_GETRESPONSEPOPUP_DEV_MODE',
         'WB_GETRESPONSEPOPUP_DEV_PARAM',
         'WB_GETRESPONSEPOPUP_API_KEY',
+        'WB_GETRESPONSEPOPUP_API_ENDPOINT_KEY',
+        'WB_GETRESPONSEPOPUP_API_LAST_RUN',
         'WB_GETRESPONSEPOPUP_CAMPAIGN_TOKEN',
         'WB_GETRESPONSEPOPUP_GR_DISCOUNT_FIELD_ID',
         'WB_GETRESPONSEPOPUP_FIELD_FIRSTNAME',
@@ -170,6 +172,8 @@ class Wb_getresponsepopup extends Module
             'WB_GETRESPONSEPOPUP_DEV_MODE' => '0',
             'WB_GETRESPONSEPOPUP_DEV_PARAM' => 'wbpopup',
             'WB_GETRESPONSEPOPUP_API_KEY' => '',
+            'WB_GETRESPONSEPOPUP_API_ENDPOINT_KEY' => '',
+            'WB_GETRESPONSEPOPUP_API_LAST_RUN' => '',
             'WB_GETRESPONSEPOPUP_CAMPAIGN_TOKEN' => '',
             'WB_GETRESPONSEPOPUP_GR_DISCOUNT_FIELD_ID' => '',
             'WB_GETRESPONSEPOPUP_FIELD_FIRSTNAME' => '0',
@@ -240,9 +244,17 @@ class Wb_getresponsepopup extends Module
             case 'searchProducts':
                 $this->ajaxSearchProducts();
                 break;
+            case 'generateApiKey':
+                $this->ajaxGenerateApiKey();
+                break;
         }
 
         exit;
+    }
+
+    private function ajaxGenerateApiKey(): void
+    {
+        $this->ajaxAdminResponse(true, '', ['key' => bin2hex(random_bytes(32))]);
     }
 
     private function ajaxTestApiConnection(): void
@@ -471,7 +483,9 @@ class Wb_getresponsepopup extends Module
         Configuration::updateValue('WB_GETRESPONSEPOPUP_ACTIVE', (int) Tools::getValue('WB_GETRESPONSEPOPUP_ACTIVE'));
         Configuration::updateValue('WB_GETRESPONSEPOPUP_DEV_MODE', (int) Tools::getValue('WB_GETRESPONSEPOPUP_DEV_MODE'));
         Configuration::updateValue('WB_GETRESPONSEPOPUP_DEV_PARAM', pSQL(trim((string) Tools::getValue('WB_GETRESPONSEPOPUP_DEV_PARAM'))) ?: 'wbpopup');
+        $endpointKey = preg_replace('/[^A-Za-z0-9]/', '', (string) Tools::getValue('WB_GETRESPONSEPOPUP_API_ENDPOINT_KEY'));
         Configuration::updateValue('WB_GETRESPONSEPOPUP_API_KEY', pSQL($apiKey));
+        Configuration::updateValue('WB_GETRESPONSEPOPUP_API_ENDPOINT_KEY', pSQL((string) $endpointKey));
         Configuration::updateValue('WB_GETRESPONSEPOPUP_CAMPAIGN_TOKEN', pSQL($campaignToken));
         Configuration::updateValue('WB_GETRESPONSEPOPUP_GR_DISCOUNT_FIELD_ID', pSQL((string) Tools::getValue('WB_GETRESPONSEPOPUP_GR_DISCOUNT_FIELD_ID')));
         Configuration::updateValue('WB_GETRESPONSEPOPUP_FIELD_FIRSTNAME', (int) Tools::getValue('WB_GETRESPONSEPOPUP_FIELD_FIRSTNAME'));
@@ -977,6 +991,24 @@ class Wb_getresponsepopup extends Module
 
     private function getGetResponseFieldset(): array
     {
+        $endpointUrl = $this->context->link->getModuleLink($this->name, 'api', [], true);
+
+        $lastRun = (string) Configuration::get('WB_GETRESPONSEPOPUP_API_LAST_RUN');
+        $lastRunLabel = $lastRun !== ''
+            ? $lastRun
+            : $this->trans('Never', [], 'Modules.Wbgetresponsepopup.Admin');
+
+        $endpointInfoHtml = '<div class="alert alert-info" style="margin-bottom:0;">'
+            . '<p style="margin:0 0 6px;"><strong>' . $this->trans('Endpoint URL', [], 'Modules.Wbgetresponsepopup.Admin') . ':</strong></p>'
+            . '<p style="margin:0 0 6px;"><code>POST</code> '
+            . '<a href="' . htmlspecialchars($endpointUrl) . '" target="_blank" rel="noopener">' . htmlspecialchars($endpointUrl) . '</a></p>'
+            . '<p style="margin:0 0 6px;">' . $this->trans('Send the endpoint key in the HTTP header', [], 'Modules.Wbgetresponsepopup.Admin')
+            . ' <code>X-Api-Key</code>. ' . $this->trans('JSON body fields', [], 'Modules.Wbgetresponsepopup.Admin')
+            . ': <code>email</code>, <code>name</code>, <code>campaignId</code>.</p>'
+            . '<p style="margin:0;"><strong>' . $this->trans('Last endpoint call', [], 'Modules.Wbgetresponsepopup.Admin') . ':</strong> '
+            . htmlspecialchars($lastRunLabel) . '</p>'
+            . '</div>';
+
         return [
             'form' => [
                 'legend' => [
@@ -1010,6 +1042,24 @@ class Wb_getresponsepopup extends Module
                         'label' => $this->trans('Discount Code Custom Field Name', [], 'Modules.Wbgetresponsepopup.Admin'),
                         'name' => 'WB_GETRESPONSEPOPUP_GR_DISCOUNT_FIELD_ID',
                         'desc' => $this->trans('GetResponse custom field name for the discount code (e.g., "discount_code"). Must match the exact field name in GetResponse > Contacts > Custom fields. Leave empty to skip sending discount code to GetResponse.', [], 'Modules.Wbgetresponsepopup.Admin'),
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => $this->trans('Endpoint API Key', [], 'Modules.Wbgetresponsepopup.Admin'),
+                        'name' => 'WB_GETRESPONSEPOPUP_API_ENDPOINT_KEY',
+                        'desc' => $this->trans('Secret key required in the X-Api-Key header to call the signup endpoint. Generate a strong key, then click Save. Leave empty to disable the endpoint.', [], 'Modules.Wbgetresponsepopup.Admin'),
+                    ],
+                    [
+                        'type' => 'html',
+                        'name' => 'generate_api_key',
+                        'html_content' => '<button type="button" id="wb-gr-generate-api-key" class="btn btn-default"><i class="icon-refresh"></i> '
+                            . $this->trans('Generate Key', [], 'Modules.Wbgetresponsepopup.Admin')
+                            . '</button> <span id="wb-gr-generate-api-key-result"></span>',
+                    ],
+                    [
+                        'type' => 'html',
+                        'name' => 'endpoint_info',
+                        'html_content' => $endpointInfoHtml,
                     ],
                 ],
                 'submit' => [

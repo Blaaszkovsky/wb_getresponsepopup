@@ -39,6 +39,40 @@
         });
     }
 
+    // --- Generate Endpoint API Key ---
+    var genBtn = document.getElementById('wb-gr-generate-api-key');
+    var genResult = document.getElementById('wb-gr-generate-api-key-result');
+
+    if (genBtn) {
+        genBtn.addEventListener('click', function () {
+            genBtn.disabled = true;
+            genResult.innerHTML = '<span style="color:#666;">Generating...</span>';
+
+            fetch(wbGrPopupAjaxUrl + '&action=generateApiKey', {
+                method: 'GET',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                if (data.success && data.data && data.data.key) {
+                    var keyInput = document.querySelector('input[name="WB_GETRESPONSEPOPUP_API_ENDPOINT_KEY"]');
+                    if (keyInput) {
+                        keyInput.value = data.data.key;
+                    }
+                    genResult.innerHTML = '<span style="color:#27ae60;"><i class="icon-check"></i> Key generated. Click Save to apply.</span>';
+                } else {
+                    genResult.innerHTML = '<span style="color:#c0392b;"><i class="icon-times"></i> Could not generate a key.</span>';
+                }
+            })
+            .catch(function () {
+                genResult.innerHTML = '<span style="color:#c0392b;">Generation error.</span>';
+            })
+            .finally(function () {
+                genBtn.disabled = false;
+            });
+        });
+    }
+
     // --- Product Autocomplete ---
     var searchInput = document.getElementById('wb-gr-product-search');
     var resultsBox = document.getElementById('wb-gr-product-results');
