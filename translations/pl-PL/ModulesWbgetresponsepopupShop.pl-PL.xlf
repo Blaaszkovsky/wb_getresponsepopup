@@ -74,6 +74,10 @@
         <source>Free shipping on the entire cart!</source>
         <target>Darmowa dostawa na caly koszyk!</target>
       </trans-unit>
+      <trans-unit id="19">
+        <source>This discount code cannot be used with: %products%.</source>
+        <target>Tego kodu rabatowego nie można użyć z produktem: %products%.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
